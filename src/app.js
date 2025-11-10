@@ -2,6 +2,9 @@ const express = require('express');
 const app = express();
 const otaRoutes = require('./routes/otaRoutes');
 const errorHandler = require('./middlewares/errorHandler');
+const cors = require('cors');
+
+app.use(cors());
 
 app.use(express.json());
 

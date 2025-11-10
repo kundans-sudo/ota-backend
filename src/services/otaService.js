@@ -70,3 +70,19 @@ exports.saveOtaAck = async (deviceId, stationId, version, status, details = null
 
   return true;
 };
+
+
+// get latest version
+exports.getLatestOtaVersion = async () => {
+  // find the latest active version (based on creation time)
+  const latestVersion = await OtaVersion.findOne({
+    where: { isActive: true },
+    order: [['version', 'DESC']]
+  });
+
+  if (!latestVersion) {
+    return { message: 'No OTA version found', version: null };
+  }
+
+  return latestVersion;
+};
