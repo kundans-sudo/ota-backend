@@ -95,3 +95,35 @@ exports.getLatestVersion = async (req, res, next) => {
     next(err);
   }
 };
+
+
+
+// create new ota version
+
+
+exports.addVersion = async (req, res, next) => {
+  try {
+    console
+    const { version, merchantId, releaseDate } = req.body;
+
+    if (!version) {
+      return res.status(400).json({ message: "Version is required" });
+    }
+
+    const createdVersion = await otaService.createOtaVersion({
+      version,
+      merchantId,
+      releaseDate
+    });
+
+    return res.status(201).json({
+      message: "Version created successfully",
+      data: {
+        version: createdVersion.version,
+        folderPath: createdVersion.folderPath
+      }
+    });
+  } catch (err) {
+    next(err);
+  }
+};

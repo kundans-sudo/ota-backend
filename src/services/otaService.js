@@ -1,4 +1,6 @@
 const { OtaVersion, Device, OtaLog } = require('../models');
+const fs = require("fs");
+const path = require("path"); // << important
 
 exports.checkForOtaUpdate = async (deviceId, stationId, deviceVersion = null) => {
   // deviceVersion optional: if device sends its current version you can compare
@@ -85,4 +87,31 @@ exports.getLatestOtaVersion = async () => {
   }
 
   return latestVersion;
+};
+
+
+
+
+// create new ota version
+exports.createOtaVersion = async (data) => {
+  const { version, merchantId, releaseDate } = data;
+
+  // Base Folder Path (create new version folder inside ota_files)
+  const basePath = "D:/Developement/ota-backend/ota_files";
+  const versionFolder = path.join(basePath, version);
+
+  // Create record in DB
+  const newVersion = await OtaVersion.create({
+    version,
+    merchantId,
+    releaseDate,
+    folderPath: versionFolder
+  });
+
+  // Create Folder If Not Exists
+  if (!fs.existsSync(versionFolder)) {
+    fs.mkdirSync(versionFolder, { recursive: true });
+  }
+
+  return newVersion;
 };
